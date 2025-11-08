@@ -1,3 +1,14 @@
+'''
+Python Script for Data Preprocessing, Model Training, and Evaluation of flight data for price prediction.
+Uses a cleaned dataset from https://www.kaggle.com/datasets/shubhambathwal/flight-price-prediction
+    - Downloaded and kept in 'archive' folder as 'Clean_Dataset.csv'
+
+Expected outputs:
+- Encoded DataFrame head to verify categorical encoding.
+- Training and testing data heads.
+- R2 Score, Mean Squared Error (MSE), Root Mean Squared Error (RMSE) for Linear Regression, Ridge Regression, and Lasso Regression models.
+'''
+
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder
@@ -5,8 +16,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.metrics import mean_squared_error, r2_score, davies_bouldin_score
 
-
-df = pd.read_csv('archive/Clean_Dataset.csv') #read the dataset
+#read the dataset
+df = pd.read_csv('archive/Clean_Dataset.csv')
 
 #Encoding Categorical Columns
 
@@ -19,7 +30,7 @@ df_encoded = pd.DataFrame(encode_data, columns=encoder.get_feature_names_out(col
 
 edf = pd.concat([df.drop(columns=cols_encode), df_encoded], axis=1) #drops categorical and makes new datafram with encoding along columns
 
-print(edf.head()) #sanity check
+print(edf.head()) #Output encoded dataframe head to verify encoding
 
 # Split the data into training and testing sets
 
@@ -72,10 +83,11 @@ for name, y_pred in LinearPredictions.items():
 
     try:
         #mean squared error calculation using y_true and y_pred
-        mse = mean_squared_error(y_test, y_pred) 
+        mse = mean_squared_error(y_test, y_pred)
         rmse = np.sqrt(mse) #root mean squared error conversion
 
         #print results
+        print("\nMSE: ", mse)
         print("\nRMSE: ", rmse)
     except Exception as e:
         print("\nError calculating MSE/RMSE: ", e)
