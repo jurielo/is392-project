@@ -5,8 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.metrics import mean_squared_error, r2_score, davies_bouldin_score
 
-y_pred = None #predicted values placeholder
-y_true = None #true values placeholder
+
 df = pd.read_csv('archive/Clean_Dataset.csv') #read the dataset
 
 #Encoding Categorical Columns
@@ -58,24 +57,43 @@ y_pred_lasso = lasso_reg.predict(X_test)
 print("Done lasso linear regression.")
 
 # Metric Analysis
+# Linear Regression Metrics: RMSE, R2 Score for all linear models
 
-# Linear Regression Metrics: RMSE, R2 Score
-try:
-    mse = mean_squared_error(y_test, y_pred) #mean squared error calculation using y_true and y_pred
-    rmse = np.sqrt(mse) #root mean squared error conversion
-    print("\nRMSE: ", rmse)
-except Exception as e:
-    print("\nError calculating MSE/RMSE: ", e)
+#list of linear model prediction outputs
+LinearPredictions =  {
+    'Linear Regression Model': y_pred_lin,
+    'Ridge Regression Model': y_pred_ridge,
+    'Lasso Regression Model': y_pred_lasso
+}
 
-try:
-    r2 = r2_score(y_test, y_pred) #r2 score calculation using y_true and y_pred
-    print("\nR2 Score: ", r2)
-except Exception as e:
-    print("\nError calculating R2 Score: ", e)
+for name, y_pred in LinearPredictions.items():
+    #print model name
+    print("\n",name,":")
 
-#Dbies-Bouldin Index Metric
+    try:
+        #mean squared error calculation using y_true and y_pred
+        mse = mean_squared_error(y_test, y_pred) 
+        rmse = np.sqrt(mse) #root mean squared error conversion
+
+        #print results
+        print("\nRMSE: ", rmse)
+    except Exception as e:
+        print("\nError calculating MSE/RMSE: ", e)
+
+    try:
+        #r2 score calculation using y_true and y_pred
+        r2 = r2_score(y_test, y_pred)
+
+        #print results
+        print("\nR2 Score: ", r2)
+    except Exception as e:
+        print("\nError calculating R2 Score: ", e)
+
+'''
+#Dbies-Bouldin Index Metric (not implemented yet need y from model)
 try:
     dbScore = davies_bouldin_score(edf, y) #davies-bouldin index calculation using encoded dataframe and y
     print("\nDavies-Bouldin Index: ", dbScore)
 except Exception as e:
     print("\nError calculating Davies-Bouldin Index: ", e)
+'''
