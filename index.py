@@ -88,8 +88,8 @@ for name, y_pred in LinearPredictions.items():
         rmse = np.sqrt(mse) #root mean squared error conversion
 
         #print results
-        print("\nMSE: ", mse)
-        print("\nRMSE: ", rmse)
+        print("MSE: ", mse)
+        print("RMSE: ", rmse)
     except Exception as e:
         print("\nError calculating MSE/RMSE: ", e)
 
@@ -98,7 +98,7 @@ for name, y_pred in LinearPredictions.items():
         r2 = r2_score(y_test, y_pred)
 
         #print results
-        print("\nR2 Score: ", r2)
+        print("R2 Score: ", r2)
     except Exception as e:
         print("\nError calculating R2 Score: ", e)
 
