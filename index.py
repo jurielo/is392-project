@@ -43,7 +43,8 @@ y = edf.iloc[:,4]
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.1, random_state=0) #5% test 95% training split
 
-print(X_test.head()) #print
+#Output heads of training and testing data
+print(X_test.head()) 
 print(X_train.head())
 print(y_test.head())
 print(y_train.head())
@@ -94,8 +95,7 @@ print("Done decision tree regression.")
 
 '''Metric Analysis'''
 # Linear Regression Metrics: RMSE, R2 Score for all linear models
-#list of linear model prediction outputs
-LinearPredictions =  {
+LinearPredictions =  { #list of linear model prediction outputs
     'Linear Regression Model': y_pred_lin,
     'Ridge Regression Model': y_pred_ridge,
     'Lasso Regression Model': y_pred_lasso,
