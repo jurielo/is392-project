@@ -28,7 +28,8 @@ cols_encode = ['airline', 'source_city', 'departure_time', 'stops', 'arrival_tim
 encoder = OneHotEncoder(sparse_output=False) #intialize OneHotEncoder
 encode_data = encoder.fit_transform(df[cols_encode]) #encode the data
 
-df_encoded = pd.DataFrame(encode_data, columns=encoder.get_feature_names_out(cols_encode)) #new dataframe with encoding
+fnames = encoder.get_feature_names_out(cols_encode) #get new column names after encoding
+df_encoded = pd.DataFrame(encode_data, columns=fnames, index=df.index) #new dataframe with encoding
 
 edf = pd.concat([df.drop(columns=cols_encode), df_encoded], axis=1) #drops categorical and makes new datafram with encoding along columns
 
@@ -96,7 +97,8 @@ print("Done polynomial regression.\n")
 LinearPredictions =  {
     'Linear Regression Model': y_pred_lin,
     'Ridge Regression Model': y_pred_ridge,
-    'Lasso Regression Model': y_pred_lasso
+    'Lasso Regression Model': y_pred_lasso,
+    'Polynomial Regression Model': y_pred_poly
 }
 
 for name, y_pred in LinearPredictions.items():
