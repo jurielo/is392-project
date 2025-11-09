@@ -12,9 +12,10 @@ Expected outputs:
 
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder, PolynomialFeatures
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression, Ridge, Lasso
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import mean_squared_error, r2_score, davies_bouldin_score
 
 #read the dataset
@@ -39,12 +40,13 @@ X = edf.drop(columns=['price', 'flight']) #training data columns
 y = edf.iloc[:,4]
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.05, random_state=0) #5% test 95% training split
+    X, y, test_size=0.1, random_state=0) #5% test 95% training split
 
 print(X_test.head()) #print
 print(X_train.head())
 print(y_test.head())
 print(y_train.head())
+print(X.shape)
 
 '''Visualization'''
 
@@ -54,21 +56,39 @@ print("Training linear regression model...")
 lin_reg = LinearRegression()
 lin_reg.fit(X_train, y_train)
 y_pred_lin = lin_reg.predict(X_test)
-print("Done training linear regression.")
+print("Done training linear regression.\n")
 
 # Ridge Regression Model
 print("Training ridge regression regression model...")
-ridge_reg = Ridge(alpha=1) 
+ridge_reg = Ridge(alpha=1) # arbitrary choice
 ridge_reg.fit(X_train, y_train)
 y_pred_ridge = ridge_reg.predict(X_test)
-print("Done training ridge regression.")
+print("Done training ridge regression.\n")
 
 # Lasso Regression Model: needs scaled data for faster weight convergences
 print("Training lasso regression model...")
-lasso_reg = Lasso(max_iter=10000, random_state=42,alpha=0.01)
+lasso_reg = Lasso(alpha=0.01) # arbitrary choice
 lasso_reg.fit(X_train, y_train)
 y_pred_lasso = lasso_reg.predict(X_test)
-print("Done lasso linear regression.")
+print("Done lasso linear regression.\n")
+
+# Polynomial Regression Model: 
+print("Training polynomial regression model...")
+poly_reg = PolynomialFeatures(degree=2) # degree of 3 makes RAM run out
+X_poly_train = poly_reg.fit_transform(X_train)
+
+lin_reg.fit(X_poly_train, y_train)
+X_poly_test = poly_reg.transform(X_test)
+y_pred_poly= lin_reg.predict(X_poly_test)
+print("Done polynomial regression.\n")
+
+### Decision Tree Regression Model: Currently not working, need to reduce rows
+
+# print("Training decision tree model...")
+# dtree_reg = DecisionTreeClassifier()
+# dtree_reg.fit(X, y)
+# y_pred_dtree = dtree.predict(X_test)
+# print("Done decision tree regression.")
 
 '''Metric Analysis'''
 # Linear Regression Metrics: RMSE, R2 Score for all linear models
