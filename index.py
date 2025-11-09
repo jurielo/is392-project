@@ -83,13 +83,14 @@ X_poly_test = poly_reg.transform(X_test)
 y_pred_poly= lin_reg.predict(X_poly_test)
 print("Done polynomial regression.\n")
 
-### Decision Tree Regression Model: Currently not working, need to reduce rows
+''' Decision Tree Regression Model: Currently not working, need to reduce rows
 
-# print("Training decision tree model...")
-# dtree_reg = DecisionTreeClassifier()
-# dtree_reg.fit(X, y)
-# y_pred_dtree = dtree.predict(X_test)
-# print("Done decision tree regression.")
+print("Training decision tree model...")
+dtree_reg = DecisionTreeClassifier()
+dtree_reg.fit(X, y)
+y_pred_dtree = dtree.predict(X_test)
+print("Done decision tree regression.")
+'''
 
 '''Metric Analysis'''
 # Linear Regression Metrics: RMSE, R2 Score for all linear models
