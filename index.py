@@ -39,6 +39,22 @@ edf = pd.concat([df.drop(columns=cols_encode), df_encoded], axis=1) #drops categ
 
 print("Encoded dataframe head:\n", edf.head()) #Output encoded dataframe head to verify encoding
 
+'''Exploratory Data Analysis (EDA)'''
+
+print("\n=== Dataset EDA Before Encoding ===")
+print(f"Dataset shape: {df.shape}")
+print("\nFirst few rows:")
+print(df.head())
+print("\nDataset info:")
+print(df.info())
+print("\nStatistical summary:")
+print(df.describe())
+
+print("\n=== Price Analysis ===")
+print(f"Mean price: ${df['price'].mean():.2f}")
+print(f"Median price: ${df['price'].median():.2f}")
+print(f"Price range: ${df['price'].min():.2f} - ${df['price'].max():.2f}")
+
 ''' Split the data into training and testing sets'''
 
 X = edf.drop(columns=['price', 'flight', 'Unnamed: 0']) #training data columns
