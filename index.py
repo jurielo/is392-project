@@ -16,8 +16,11 @@ import numpy as np
 from sklearn.preprocessing import OneHotEncoder, PolynomialFeatures
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression, Ridge, Lasso
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score, davies_bouldin_score
+import matplotlib.pyplot as plt
+import seaborn as sns
+import xgboost as xgb
 
 #read the dataset
 df = pd.read_csv('archive/Clean_Dataset.csv')
@@ -38,11 +41,17 @@ print("Encoded dataframe head:\n", edf.head()) #Output encoded dataframe head to
 
 ''' Split the data into training and testing sets'''
 
-X = edf.drop(columns=['price', 'flight']) #training data columns
+X = edf.drop(columns=['price', 'flight', 'Unnamed: 0']) #training data columns
 y = edf.iloc[:,4]
 
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.1, random_state=0) #5% test 95% training split
+
+# will be used to evaulate our RMSE
+mean_price = np.mean(y_test)
+std_price = np.std(y_test)
+print("Average Flight Price: $", mean_price)
+print("Standard Deviation of Price: $", std_price)
 
 #Output heads of training and testing data
 print("\nData splits:\n")
@@ -70,33 +79,63 @@ y_pred_ridge = ridge_reg.predict(X_test)
 print("Done training ridge regression.\n")
 
 # Lasso Regression Model: needs scaled data for faster weight convergences
-print("Training lasso regression model...")
-lasso_reg = Lasso(max_iter=10000, random_state=42,alpha=0.01)
-lasso_reg.fit(X_train, y_train)
-y_pred_lasso = lasso_reg.predict(X_test)
-print("Done lasso linear regression.\n")
+# print("Training lasso regression model...")
+# lasso_reg = Lasso(max_iter=1000, random_state=42,alpha=0.01)
+# lasso_reg.fit(X_train, y_train)
+# y_pred_lasso = lasso_reg.predict(X_test)
+# print("Done lasso linear regression.\n")
 
 # Polynomial Regression Model: 
-print("Training polynomial regression model...")
-poly_reg = PolynomialFeatures(degree=2) # degree of 3 makes RAM run out
-X_poly_train = poly_reg.fit_transform(X_train)
+# print("Training polynomial regression model...")
+# poly_reg = PolynomialFeatures(degree=2) # degree of 3 makes RAM run out
+# X_poly_train = poly_reg.fit_transform(X_train)
+# lin_reg.fit(X_poly_train, y_train)
+# X_poly_test = poly_reg.transform(X_test)
+# y_pred_poly= lin_reg.predict(X_poly_test)
+# print("Done polynomial regression.\n")
 
-lin_reg.fit(X_poly_train, y_train)
-X_poly_test = poly_reg.transform(X_test)
-y_pred_poly= lin_reg.predict(X_poly_test)
-print("Done polynomial regression.\n")
+# Random Forest Model
+# print("Training random forest model...")
+# rf_model = RandomForestRegressor(n_estimators=200, max_depth=None, random_state=0, n_jobs=-1)
+# rf_model.fit(X_train, y_train)
+# y_pred_rf = rf_model.predict(X_test)
+# print("Done Random Forest.\n")
 
+# XGBoost Model
+print("Training XGBoost model...")
+xgb_model = xgb.XGBRegressor(
+    n_estimators=100,
+    learning_rate=0.03,
+    max_depth=20,
+    random_state=42,
+    n_jobs=-1
+)
+xgb_model.fit(X_train, y_train)
+y_pred_xgb = xgb_model.predict(X_test)
+
+importances = xgb_model.feature_importances_
+feature_names = X.columns
+feature_importance_df = pd.DataFrame({'feature': feature_names, 'importance': importances})
+feature_importance_df = feature_importance_df.sort_values(by='importance', ascending=False)
+plt.figure(figsize=(10, 6))
+sns.barplot(x='importance', y='feature', data=feature_importance_df.head(10))
+plt.title('XGBoost Feature Importance')
+# uncomment this out to view graph
+#plt.show() 
 
 '''Metric Analysis'''
-# Linear Regression Metrics: RMSE, R2 Score for all linear models
-LinearPredictions =  { #list of linear model prediction outputs
+# Regression Metrics: RMSE, R2 Score for all regression models
+Predictions =  { #list of model prediction outputs
     'Linear Regression Model': y_pred_lin,
     'Ridge Regression Model': y_pred_ridge,
-    'Lasso Regression Model': y_pred_lasso,
-    'Polynomial Regression Model': y_pred_poly
+    #'Lasso Regression Model': y_pred_lasso,
+    #'Polynomial Regression Model': y_pred_poly,
+    #'Random Forest Model': y_pred_rf,
+    'XGBoost Model': y_pred_xgb,
+
 }
 
-for name, y_pred in LinearPredictions.items():
+for name, y_pred in Predictions.items():
     #print model name
     print("\n",name,":")
 
@@ -119,3 +158,4 @@ for name, y_pred in LinearPredictions.items():
         print("R2 Score: ", r2)
     except Exception as e:
         print("\nError calculating R2 Score: ", e)
+
