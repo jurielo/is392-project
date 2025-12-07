@@ -77,7 +77,7 @@ print(y_test.head())
 print(y_train.head())
 print(X.shape)
 
-'''Visualization'''
+'''Visualization '''
 import matplotlib.pyplot as plt
 import seaborn as sns
 
