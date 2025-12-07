@@ -78,6 +78,82 @@ print(y_train.head())
 print(X.shape)
 
 '''Visualization'''
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+#price histogram
+plt.hist(df['price'], bins=50, edgecolor='white')
+plt.xlabel('Price')
+plt.ylabel('Count')
+plt.title('Price Box Plot')
+plt.show()
+
+#averag eprice perairlie
+aa = df.groupby('airline')['price'].mean()
+aa.plot(kind="bar", x = "airline", y = "price");
+plt.title('Price Average per Airline')
+plt.xlabel('Airline')
+plt.ylabel('Price')
+plt.show()
+
+
+#price + stops (class hue)
+sns.scatterplot( x = "stops", y = "price", data=df, alpha=0.5, hue="class", s=15, legend="brief")
+plt.title("Price based on Stops (Class ver.)")
+plt.show()
+
+#price + stops (ariline hue)
+sns.scatterplot( x = "stops", y = "price", data=df, alpha=1, hue="airline", s=15, legend="brief")
+plt.title("Price based on Stops (Airline ver.)")
+plt.show()
+
+#duration hist
+plt.hist(df["duration"], bins=50, edgecolor='white')
+plt.title('Flight Duration Box Plot')
+plt.show()
+
+#scatter plot price + duretion
+sns.scatterplot( x = "duration", y = "price",data=df, alpha=0.2, s=15)
+plt.title("Price based on duration")
+plt.show()
+
+#price + days left scatter plot
+sns.scatterplot( x = "days_left", y = "price",data=df, alpha=0.01, s=15)
+plt.title("Price based on days left to flight")
+plt.show()
+
+#seaborn plot map of histograms based on airline and price
+ap = sns.FacetGrid(df, col="airline", col_wrap=2, height=10)
+ap.map(sns.histplot, "price", bins=25)
+plt.show()
+
+# map hist sourcecity + price 
+scp = sns.FacetGrid(df, col="source_city", col_wrap=2, height=15)
+scp.map(sns.histplot, "price", bins=45)
+plt.show()
+
+# map hist departuretime + price 
+dtp = sns.FacetGrid(df, col="departure_time", col_wrap=2, height=10)
+dtp.map(sns.histplot, "price", bins=50)
+plt.show()
+
+# mh arrivaltime + rpice
+atp = sns.FacetGrid(df, col="arrival_time", col_wrap=2, height=15)
+atp.map(sns.histplot, "price", bins=40)
+plt.show()
+
+#mh destcity + pricee
+dcp = sns.FacetGrid(df, col="destination_city", col_wrap=2, height=10)
+dcp.map(sns.histplot, "price", bins=50)
+plt.show()
+
+#stacked hist of price from business and economy
+plt.hist([ df[df['class'] == 'Business']['price'], df[df['class'] == 'Economy']['price']], bins=50, stacked=True, color=["black", "pink"], edgecolor="white")
+plt.xlabel('Price')
+plt.ylabel('Count')
+plt.title('Stacked Histogram of Flight Class')
+plt.legend(['Business', 'Economy'])
+plt.show()
 
 ''' Model Training '''
 # Linear Regression Model
